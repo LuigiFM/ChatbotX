@@ -1,0 +1,180 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+
+}
+
+body{
+    background-color: #081028;
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+}
+
+.main
+{
+    height: 100vh;
+}
+.sidebar
+{
+    transition: 0.5s;
+    color: #AEB9E1;
+    display: flex;
+    flex-direction: column;
+ 
+    align-items: center;
+    width: 15vw;
+    
+    box-shadow: 10px 1px 10px #070d22;
+        
+}
+
+
+
+.header
+{
+
+    display: flex;
+    flex-direction: row;  
+    height: 5vh;
+    justify-content: center;
+    gap: 400px;
+    margin-top: 20px;
+    align-items: center;
+    padding: 0 40px;
+}
+
+ul
+{
+    list-style-type: none;
+}
+#sidebarlist li
+{
+    transition: 0.25s;
+    padding: 15px 0px;
+    font-size: 20px;
+    cursor: pointer;
+    width:15vw;
+    padding-left:40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    
+
+}
+
+#sidebarlist li:hover
+{
+    background-color: #070d22;
+
+
+}
+#listsep
+{
+    margin-top:400px;
+}
+
+#sidebartitle
+{
+    padding-top: 30px;
+    font-weight: 500;
+    font-size: 25px;
+    color: white;
+    padding-left:40px;
+    
+    
+}
+
+#search
+{
+    margin-top: 40px;
+    background-color: #0B1739;
+    border: 1px solid #343B4F;
+    outline: 0;
+    color: white;
+    width: 180px;
+    padding: 13px 25px;
+    color: white;
+    font-size: 15px;
+    margin-left: 15%;
+
+}
+
+#search::placeholder
+{
+    color: #AEB9E1;
+}
+
+#searchhead
+{
+    background-color: #0B1739;
+    border: 1px solid #343B4F;
+    outline: 0;
+    color: 0;
+    width: 20%;
+    height: 100%;
+    padding: 13px 25px;
+    color: white;
+    font-size: 20px;
+    margin-left: 0%;
+}
+
+#searchhead::placeholder
+{
+    color: #AEB9E1;
+}
+
+#septitle
+{
+    margin-top: 10%;
+}
+
+#add
+{
+    transition: .2s;
+    background-color: #CB3CFF;
+    color: white;
+    border: 0;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 12vw;
+    padding: 1%;
+    font-size: 17px;
+
+}
+
+#add:hover
+{
+    background-color: #c425fd;
+}
+
+
+#title
+{
+    color: white;
+    font-weight: 500;
+}
+
+img
+{
+    width: 8%;
+    margin: 0 5%;
+    height: 8%;
+}
+
+.container
+{
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    width: 70%;
+    border: 1px solid #343B4F;
+    margin-top: 5%;
+    margin-left: 12%;
+    border-radius: 10px;
+    background-color: #060e24;
+}

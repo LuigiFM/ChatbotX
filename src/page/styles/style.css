@@ -1,0 +1,91 @@
+
+
+.saira-regular {
+  font-family: "Saira", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+  font-variation-settings:
+    "wdth" 100;
+}
+
+*
+{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: "Saira", sans-serif;
+}
+
+
+body{
+    background-color: #27262C;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 100vh;
+}
+
+#loginText
+{
+    color: white;
+    font-size: 60px;
+    font-weight: 400;
+
+}
+
+.container
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 35px;
+    width: 40vh;
+    height: 50vh;
+}
+
+input::placeholder
+{
+    color: #999999;
+}
+.container input
+{
+    outline: 0;
+    background-color: transparent;
+    border: 0;
+    border-bottom: 1px solid white;
+    color: white;
+    width: 100%;
+    height: 5%;
+    padding: 20px 1px;
+    font-size: 18px;
+
+}
+
+.container button
+{
+    transition: 0.25s;
+    background-color: #4044ED;
+    border: 0;
+    color: rgb(255, 255, 255);
+    width: 100%;
+    height: 10%;
+    border-radius: 2px;
+    font-size: 20px;
+}
+
+.container button:hover
+{
+    transition: 0.25s;
+    background-color: #4043edb0;
+    cursor: pointer;
+    
+}
+
+#errormsg 
+{
+    color: red;
+
+    min-height: 25px;
+}
