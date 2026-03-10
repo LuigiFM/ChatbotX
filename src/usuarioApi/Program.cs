@@ -2,8 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 using usuarioApi.Database;
 using usuarioApi.Models;
-
+using DotNetEnv;
 var builder = WebApplication.CreateBuilder(args);
+
+Env.Load();
 
 builder.Services.AddOpenApi();
 

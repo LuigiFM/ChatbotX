@@ -16,6 +16,7 @@ using OpenAI.Assistants;
 using usuarioApi.Methods;
 using System.Text;
 using System.Net.Http.Headers;
+using DotNetEnv;
 
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
@@ -30,10 +31,13 @@ namespace usuarioApi.Controllers
 
         private readonly AppDbContext _dbContext;
         private readonly IHttpClientFactory _httpClientFactory;
+
+        
         public ChatbotController(AppDbContext dbContext, IHttpClientFactory httpClientFactory)
         {
             _dbContext = dbContext;
             _httpClientFactory = httpClientFactory;
+            
         
         }
 
@@ -81,7 +85,7 @@ namespace usuarioApi.Controllers
 
             if(chatbot == null) return NotFound();
 
-            string APIKey = "";
+            var APIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
             var client = new OpenAIClient(APIKey);
 
             var messages = new List<ChatMessage>();
@@ -139,8 +143,8 @@ namespace usuarioApi.Controllers
         public async Task<IActionResult> SendMessage(WhatsappMessage msg)
         {
 
-            string whatsappToken = "";
-            string phoneNumberId = "";
+            var whatsappToken = Environment.GetEnvironmentVariable("META_API_KEY");
+            var phoneNumberId = Environment.GetEnvironmentVariable("PHONE_NUMBER_ID");
             string url = $"https://graph.facebook.com/v25.0/{phoneNumberId}/messages";
 
             var http = _httpClientFactory.CreateClient();
