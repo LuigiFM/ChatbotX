@@ -1,4 +1,4 @@
-const API_BASE = `${document.origin}/api/Chatbot`;
+const API_BASE = 'http://localhost:5074/api/Chatbot';
 const DEFAULT_TEMPERATURE = 1.0;
 
 const app = document.getElementById('app');
@@ -327,7 +327,7 @@ async function createChatbotOnApi(payload) {
       throw new Error('A requisição demorou demais. Verifique se a API local está online.');
     }
     if (error instanceof TypeError) {
-      throw new Error('Falha de rede ao acessar a API. Verifique se a API está rodando e se o navegador consegue alcançá-la.');
+      throw new Error('Falha de rede ao acessar http://localhost:5074. Verifique se a API está rodando e se o navegador consegue alcançá-la.');
     }
     throw error;
   } finally {
