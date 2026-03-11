@@ -1,39 +1,219 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="../styles/styleindex.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard de Chatbots</title>
+  <link rel="stylesheet" href="../styles/styleindex.css" />
 </head>
 <body>
-        <div class="sidebar">
-            <ul id="sidebarlist">
-                <p id="sidebartitle">Chatbots X</p>
-                <input type="text" placeholder="Search for..." id="search">
-                <li id="septitle"><img src="../../../assets/images/dashboard.png" alt="" class="icon">Dashboard</li>
-                <li><img src="../../../assets/images/features.png" alt="" class="icon">Features</li>
-                <li><img src="../../../assets/images/pricing.png" alt="" class="icon">Pricing</li>
-                <li id="listsep"><img src="../../../assets/images/menu-bar.png" alt="" class="icon"></i> Setting</li>
-                <li><img src="../../../assets/images/profile.png" alt="" class="icon">Profile</li>
-                <li><img src="../../../assets/images/logout.png" alt="" class="icon">Logout</li>
-            </ul>
+  <div class="app" id="app">
+    <aside class="sidebar">
+      <button class="toggle-btn" id="toggleSidebar" aria-label="Alternar sidebar">❮</button>
+
+      <div class="brand">
+        <div class="brand-badge">AI</div>
+        <div class="brand-text">
+          <h1>PurpleBot Hub</h1>
+          <span>Painel de gerenciamento</span>
         </div>
+      </div>
 
-        <div class="main">
+      <nav class="menu" id="menuNav">
+        <a class="active" data-page="dashboard"><span class="icon">⬢</span><span class="hidden-text">Dashboard</span></a>
+        <a data-page="chatbots"><span class="icon">🤖</span><span class="hidden-text">Chatbots</span></a>
+        <a data-page="chat"><span class="icon">💬</span><span class="hidden-text">Chat</span></a>
+        <a data-page="metrics"><span class="icon">📊</span><span class="hidden-text">Métricas</span></a>
+        <a data-page="settings"><span class="icon">⚙️</span><span class="hidden-text">Configurações</span></a>
+      </nav>
 
-            <ul class="header">
-            <h1 id="title">Dashboard</h1>
-            <input type="text" placeholder="Search for..." id="searchhead">
-            <button id="add">Add chatbot</button>
-            </ul>
+      <div class="sidebar-footer">
+        <strong>Ambiente Gemini</strong>
+        <p>Crie, remova e converse com bots usando sua API local e um layout moderno em roxo.</p>
+      </div>
+    </aside>
 
-            <div class="container">
+    <main class="main">
+      <div class="topbar">
+        <div class="title-wrap">
+          <h2 id="pageTitle">Dashboard de Chatbots</h2>
+          <p id="pageDescription">Crie, visualize e organize seus assistentes com uma interface elegante em roxo.</p>
+        </div>
+        <div class="actions" id="globalActions">
+          <button class="btn btn-secondary" id="seedBots">Popular exemplos locais</button>
+          <button class="btn btn-primary" id="openModal">+ Adicionar chatbot</button>
+        </div>
+      </div>
+
+      <section class="page active" id="page-dashboard">
+        <section class="overview">
+          <div class="card stat-card">
+            <div class="stat-label">Chatbots criados</div>
+            <div class="stat-value" id="totalBots">0</div>
+            <div class="stat-sub">Assistentes personalizados prontos para uso</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Modelo mais usado</div>
+            <div class="stat-value" id="topModel">—</div>
+            <div class="stat-sub">Atualizado automaticamente pela lista</div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-label">Conversa ativa</div>
+            <div class="stat-value" id="activeConversationLabel">—</div>
+            <div class="stat-sub">Exibida quando um bot for selecionado no chat</div>
+          </div>
+        </section>
+
+        <section class="content-grid">
+          <div class="card section">
+            <div class="section-header">
+              <div>
+                <h3>Resumo dos chatbots</h3>
+                <p>Veja os bots cadastrados e gerencie rapidamente.</p>
+              </div>
             </div>
-        </div>
-    
+            <div class="chatbot-list" id="dashboardBotList"></div>
+          </div>
 
-    
-    
+          <div class="card section">
+            <div class="section-header">
+              <div>
+                <h3>Atividade</h3>
+                <p>Fluxo da integração local.</p>
+              </div>
+            </div>
+            <div class="activity-list">
+              <div class="activity-item">
+                <strong>Criação via API</strong>
+                <span>O front envia <code>model</code>, <code>temperature</code> e <code>messages</code> para <code>POST /api/Chatbot</code>.</span>
+              </div>
+              <div class="activity-item">
+                <strong>Consulta do bot</strong>
+                <span>Na aba Chat, ao selecionar um bot, o front chama <code>GET /api/Chatbot/{id}</code>.</span>
+              </div>
+              <div class="activity-item">
+                <strong>Webhook da conversa</strong>
+                <span>Cada envio faz <code>POST /api/Chatbot/webhook</code> com <code>conversationId</code>, <code>chatbotId</code> e <code>message</code>.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="page" id="page-chatbots">
+        <div class="card section">
+          <div class="section-header">
+            <div>
+              <h3>Gerenciar chatbots</h3>
+              <p>Adicione novos bots, veja o ID retornado pela API e apague da interface quando necessário.</p>
+            </div>
+          </div>
+          <div class="chatbot-list" id="chatbotList"></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-chat">
+        <div class="chat-layout">
+          <div class="card section chat-sidebar-card">
+            <div class="section-header">
+              <div>
+                <h3>Selecionar bot</h3>
+                <p>Escolha um chatbot para abrir a conversa.</p>
+              </div>
+            </div>
+            <div class="chatbot-select-list" id="chatbotSelectList"></div>
+          </div>
+
+          <div class="card section chat-panel chat-window">
+            <div class="chat-window-header">
+              <div>
+                <h3 id="chatSelectedBotName">Nenhum bot selecionado</h3>
+                <small id="chatSelectedBotMeta" class="muted">Selecione um chatbot à esquerda para carregar a conversa.</small>
+              </div>
+              <div class="conversation-id" id="conversationBadge">conversationId: —</div>
+            </div>
+
+            <div class="messages" id="chatMessages">
+              <div class="message system">Selecione um bot para iniciar uma conversa.</div>
+            </div>
+
+            <form class="chat-form" id="chatForm">
+              <textarea id="chatInput" placeholder="Digite sua mensagem para o chatbot selecionado..." required></textarea>
+              <button class="btn btn-primary" type="submit">Enviar</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-metrics">
+        <div class="card section">
+          <div class="section-header">
+            <div>
+              <h3>Métricas</h3>
+              <p>Resumo simples com base no estado atual da aplicação.</p>
+            </div>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item"><strong>Total de bots</strong><span id="metricsBots">0 bots cadastrados.</span></div>
+            <div class="settings-item"><strong>Bot selecionado para chat</strong><span id="metricsSelectedBot">Nenhum bot selecionado.</span></div>
+            <div class="settings-item"><strong>Mensagens na conversa atual</strong><span id="metricsMessages">0 mensagens carregadas.</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" id="page-settings">
+        <div class="card section">
+          <div class="section-header">
+            <div>
+              <h3>Configurações da integração</h3>
+              <p>Endpoints usados pelo JavaScript nesta versão.</p>
+            </div>
+          </div>
+          <div class="settings-list">
+            <div class="settings-item"><strong>POST criação</strong><span>http://localhost:5074/api/Chatbot</span></div>
+            <div class="settings-item"><strong>GET chatbot por ID</strong><span>http://localhost:5074/api/Chatbot/{id}</span></div>
+            <div class="settings-item"><strong>POST webhook</strong><span>http://localhost:5074/api/Chatbot/webhook</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3>Adicionar novo chatbot</h3>
+          <p>O nome é exibido só no frontend. A API recebe modelo, temperatura e a mensagem system.</p>
+        </div>
+        <button class="close-btn" id="closeModal" aria-label="Fechar modal">✕</button>
+      </div>
+
+      <form id="chatbotForm">
+        <div class="form-group">
+          <label for="botName">Nome do chatbot</label>
+          <input type="text" id="botName" placeholder="Ex.: Professor de Matemática" required />
+        </div>
+        <div class="form-group">
+          <label for="botModel">Modelo Gemini</label>
+          <select id="botModel" required>
+            <option value="">Selecione um modelo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="botBehavior">Como ele deve agir</label>
+          <textarea id="botBehavior" placeholder="Ex.: Você deve ajudar o usuário com dúvidas de matemática." required></textarea>
+        </div>
+        <div id="createBotStatus" class="status-text"></div>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" id="cancelModal">Cancelar</button>
+          <button type="submit" class="btn btn-primary" id="createBotSubmitBtn">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../scripts/scriptdash.js"></script>
 </body>
 </html>

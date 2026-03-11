@@ -54,7 +54,7 @@ namespace usuarioApi.Controllers
         public async Task<IActionResult> RegisterChatbot([FromBody] Chatbot chatbot)
         {
 
-            foreach (Message msg in chatbot.Messages.OrderByDescending(m => m.CreatedAt).Take(15))
+            foreach (Message msg in chatbot.Messages.OrderByDescending(m => m.CreatedAt))
             {
                 msg.ChatbotId = chatbot.Id;
             }
@@ -155,6 +155,7 @@ namespace usuarioApi.Controllers
                     ChatbotId = chatbot.Id,
                     ChatId = chatId
                 });
+
                 await _dbContext.SaveChangesAsync();
             
                 return content;
@@ -165,7 +166,7 @@ namespace usuarioApi.Controllers
         }
 
     
-        [HttpPost("zapzap")]
+        [HttpPost("whatsapp")]
         public async Task<IActionResult> SendMessage(WhatsappMessage msg)
         {
 

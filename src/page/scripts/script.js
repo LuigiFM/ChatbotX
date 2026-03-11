@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from './node_modules/uuid/dist/index.js';
 
 const loginButton = document.getElementById("loginButton");
-const ApiUrl = "http://localhost:5074/api/Usuarios";
+const ApiUrl = `${location.origin}/api/Usuarios`;
 
 loginButton.addEventListener("click", () => 
 {
@@ -27,7 +27,7 @@ loginButton.addEventListener("click", () =>
     {
         let data = await res.json();
         await loginUser(data, res.status == 200);
-
+        if(res.status == 200) console.log("logou porra")
         return data;
     }
     )
@@ -46,6 +46,7 @@ const loginUser = (userId, exist) =>
     if(!exist) 
     {
         const errormsg = document.getElementById("errormsg")
+        console.log("num existe")
         errormsg.innerText = "Esse usuário não existe."
         return;
     };
