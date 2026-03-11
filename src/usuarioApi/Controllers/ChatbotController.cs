@@ -17,6 +17,10 @@ using usuarioApi.Methods;
 using System.Text;
 using System.Net.Http.Headers;
 using DotNetEnv;
+using Google.GenAI;
+using Google.GenAI.Types;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
@@ -40,7 +44,12 @@ namespace usuarioApi.Controllers
             
         
         }
-
+        [HttpGet]
+        public async Task<IActionResult> GetAllChatBotsFromUser([FromBody] User user)
+        {
+            
+            return Ok();
+        }
         [HttpPost]
         public async Task<IActionResult> RegisterChatbot([FromBody] Chatbot chatbot)
         {
@@ -75,66 +84,83 @@ namespace usuarioApi.Controllers
             return Ok(chatbot);
         }
 
-        [HttpPost("{id}")]
-        public async Task<IActionResult> ActionChatBot(Guid id)
+        public async Task<string> ActionChatBot(Guid id)
         {
 
             Chatbot chatbot = await _dbContext.Chatbots
             .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.Id == id);
 
-            if(chatbot == null) return NotFound();
+            if(chatbot == null) return "Não existe esse chatbot";
 
-            var APIKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-            var client = new OpenAIClient(APIKey);
+            var APIKey = System.Environment.GetEnvironmentVariable("GEMINI_API_KEY");
+            var client = new Client(apiKey: APIKey);
 
-            var messages = new List<ChatMessage>();
+            Guid chatId = chatbot.Messages.OrderByDescending(c => c.CreatedAt).FirstOrDefault().ChatId;
 
-            foreach(Message message in chatbot.Messages)
+            var messages = new List<Content>();
+
+            foreach(Message message in chatbot.Messages
+            .Where(c => c.ChatId == chatId)
+            .OrderBy(m => m.CreatedAt))
+        
             {
                 switch (message.Role)
                 {
-                    case "system":
-                        messages.Add(new SystemChatMessage(message.Content));
-                        break;
                     case "user":
-                        messages.Add(new UserChatMessage(message.Content));
+                        messages.Add(new Content
+                        {
+                            Role = "user",
+                            Parts = [ new Part { Text = message.Content } ]
+                        });
                         break;   
-                    case "assistant":
-                        messages.Add(new AssistantChatMessage(message.Content));
+                    case "model":
+                        messages.Add(new Content
+                        {
+                            Role = "model",
+                            Parts = [ new Part { Text = message.Content } ]
+                        });
                         break;
                 }               
             };
 
-            ChatCompletionOptions options = new ChatCompletionOptions
+            GenerateContentConfig options = new GenerateContentConfig
             {
-                Temperature = chatbot.Temperature    
-            };
+                Temperature = chatbot.Temperature ,
+                SystemInstruction = new Content{
+                    Parts = new List<Part>{
+                        new Part { Text = chatbot.Messages.Where(m => m.Role == "system").Select(m => m.Content).LastOrDefault()}
+                    }
 
-            var response = await client.GetChatClient(chatbot.Model).CompleteChatAsync(messages, options);
-            
-            
+                    }
+            };        
+            var response = await client.Models.GenerateContentAsync(
+                model: chatbot.Model,
+                contents: messages,
+                config: options
+            );
 
-            if(response.Value.Content.Count > 0) 
+
+            if(response != null && response.Candidates.Count > 0) 
             {
-                var content = response.Value.Content.First();
+                var content = response.Candidates.FirstOrDefault().Content.Parts.FirstOrDefault().Text;
 
-                await SendMessage(new WhatsappMessage { text = content.Text });
+                if(String.IsNullOrWhiteSpace(content)) return "A IA não retornou nada.";
+                //await SendMessage(new WhatsappMessage { text = content });
 
-                chatbot.Messages.Add(new Message()
+                _dbContext.Messages.Add(new Message
                 {
-                    Role = "assistant",
-                    Content = content.Text,
-                    ChatbotId = chatbot.Id
+                    Role = "model",
+                    Content = content,
+                    ChatbotId = chatbot.Id,
+                    ChatId = chatId
                 });
-
                 await _dbContext.SaveChangesAsync();
             
-                return Ok(content);
+                return content;
                 }
-            else return Ok("A IA não retornou nada.");
+            else return "A IA não retornou nada.";
 
-            
             
         }
 
@@ -143,8 +169,8 @@ namespace usuarioApi.Controllers
         public async Task<IActionResult> SendMessage(WhatsappMessage msg)
         {
 
-            var whatsappToken = Environment.GetEnvironmentVariable("META_API_KEY");
-            var phoneNumberId = Environment.GetEnvironmentVariable("PHONE_NUMBER_ID");
+            var whatsappToken = System.Environment.GetEnvironmentVariable("META_API_KEY");
+            var phoneNumberId = System.Environment.GetEnvironmentVariable("PHONE_NUMBER_ID");
             string url = $"https://graph.facebook.com/v25.0/{phoneNumberId}/messages";
 
             var http = _httpClientFactory.CreateClient();
@@ -174,24 +200,58 @@ namespace usuarioApi.Controllers
         }
 
 
-        [HttpPost("webhook/newmsg/{id}")]
-        public async Task<IActionResult> ReadMessage(Guid id, [FromBody] Message message)
-        {
+        [HttpPost("webhook")]
+        public async Task<IActionResult> ReadMessageWhatsapp([FromBody] Chat chat)
+        {   
+            //Associar 
+            Guid chatbotId = Guid.Parse(chat.ChatbotId.ToString());
+            Guid chatId = Guid.Parse(chat.Id.ToString());
+            Message message = 
+                new Message
+                {
+                    Content = chat.text.ToString(),
+                    Role = "user",
+                    ChatbotId = chatbotId,
+                    ChatId = chatId
+                    
+                };
 
-            Chatbot chatbot = await _dbContext.Chatbots.FindAsync(id);
-
-            if(chatbot == null) return NotFound();
-
-            message.ChatbotId = chatbot.Id;
             _dbContext.Messages.Add(message);
-
             await _dbContext.SaveChangesAsync();
-            return await ActionChatBot(id);
+
+            string response = await ActionChatBot(chatbotId);
+
+
+
+            /*if(String.IsNullOrWhiteSpace(geminiResponse))
+            {
+                geminiResponse = response.Value;
+            }
+            if(String.IsNullOrWhiteSpace(geminiResponse = response.Value)) return BadRequest($"{JsonSerializer.Serialize(response)}\n{JsonSerializer.Serialize(okObject)}\n{geminiResponse}");  
+            */
+            return Ok(response);
 
         }
 
+        /*
+            [HttpGet("webhook")]
+            public async Task<IActionResult> ReadMessageWhatsapp([FromBody] JObject messages)
+        {   
+            //Associar 
+            Chatbot chatbot = await _dbContext.Chatbots.FindAsync();
+
+            if(chatbot == null) return NotFound();
+
+
+            await _dbContext.SaveChangesAsync();
+            return Ok();
+
+        }
         
-        [HttpGet("webhook")]
+        */
+
+        
+        /*[HttpGet("webhook")]
             public IActionResult Verify(
                 [FromQuery(Name = "hub.mode")] string mode,
                 [FromQuery(Name = "hub.verify_token")] string token,
@@ -206,6 +266,9 @@ namespace usuarioApi.Controllers
  
                 return Forbid();
             }
+
+        */
+
 
     }
 

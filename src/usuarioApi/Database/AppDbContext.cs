@@ -10,6 +10,7 @@ namespace usuarioApi.Database
         public DbSet<User> Usuarios { get; set; }
         public DbSet<Chatbot> Chatbots { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Chat> Chats { get; set; }
         
     }
 }

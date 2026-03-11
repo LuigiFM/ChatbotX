@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj": {}
+    "C:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj": {}
   },
   "projects": {
-    "c:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj": {
+    "C:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj",
+        "projectUniqueName": "C:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj",
         "projectName": "usuarioApi",
-        "projectPath": "c:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj",
+        "projectPath": "C:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\usuarioApi.csproj",
         "packagesPath": "C:\\Users\\Luigi\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\obj\\",
+        "outputPath": "C:\\Users\\Luigi\\Desktop\\ChatBot\\src\\usuarioApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[3.1.1, )"
             },
+            "Google.GenAI": {
+              "target": "Package",
+              "version": "[1.3.0, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.3, )"
@@ -65,6 +69,10 @@
             "Microsoft.EntityFrameworkCore.Design": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.3, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[10.0.3, )"
             },
@@ -96,7 +104,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",

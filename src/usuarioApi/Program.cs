@@ -16,19 +16,10 @@ builder.Services.AddHttpClient();
 builder.Services.AddControllers();
 
 // database
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+//builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseInMemoryDatabase("database"));
 var app = builder.Build();
 
-
-
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
-
-app.MapControllers();
 app.UseCors(options =>
 {
     options
@@ -37,11 +28,19 @@ app.UseCors(options =>
     .AllowAnyOrigin();
 });
 
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
+
+app.MapControllers();
+
+
 
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
 
     if(!db.Usuarios.Any())
     {

@@ -29,6 +29,14 @@ namespace usuarioApi.Models
 
         [JsonIgnore]
         public Chatbot Chatbot { get; set; }
+
+        [JsonIgnore]
+        public Guid ChatId { get; set; }
+
+        [JsonIgnore]
+        public Chat Chat { get; set;}
+
+
     }
     public class Chatbot
     {
@@ -63,6 +71,25 @@ namespace usuarioApi.Models
 
 
 
+
+    }
+    public class Chat
+    {
+        [Key]
+        [JsonPropertyName("conversationId")]
+        public Guid Id { get; set; }
+
+        [JsonPropertyName("messages")]
+        public List<Message> Messages { get; set; }
+
+        [JsonPropertyName("chatbotid")]
+        public Guid ChatbotId { get; set; }
+
+        [JsonPropertyName("message")]
+        public string text { get; set; }
+
+        [JsonIgnore]
+        public Chatbot Chatbot { get; set; }
 
     }
 }
