@@ -21,6 +21,7 @@ using Google.GenAI;
 using Google.GenAI.Types;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Runtime.InteropServices.JavaScript;
 
 #pragma warning disable OPENAI001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
 
@@ -44,10 +45,19 @@ namespace usuarioApi.Controllers
             
         
         }
-        [HttpGet]
-        public async Task<IActionResult> GetAllChatBotsFromUser([FromBody] User user)
+
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteChatBot(Guid id)
         {
-            
+            Chatbot chatbot = _dbContext.Chatbots.FirstOrDefault(x => x.Id == id);
+
+            if(chatbot == null) return NotFound("oxe");
+
+            _dbContext.Chatbots.Remove(chatbot);
+
+            await _dbContext.SaveChangesAsync();
+
             return Ok();
         }
         [HttpPost]
@@ -91,7 +101,7 @@ namespace usuarioApi.Controllers
             .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.Id == id);
 
-            if(chatbot == null) return "Não existe esse chatbot";
+            if(chatbot == null) return "Esse chatbot não existe. Erro 404.";
 
             var APIKey = System.Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             var client = new Client(apiKey: APIKey);

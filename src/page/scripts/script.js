@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from './node_modules/uuid/dist/index.js';
 
 const loginButton = document.getElementById("loginButton");
-const ApiUrl = `${location.origin}/api/Usuarios`;
+const ApiUrl = "http://localhost:5074/api/Usuarios";
 
 loginButton.addEventListener("click", () => 
 {

@@ -407,7 +407,7 @@ async function handleCreateBot(event) {
   }
 }
 
-function deleteBot(botId) {
+async function deleteBot(botId) {
   const bot = chatbots.find(item => String(item.id) === String(botId));
   if (!bot) return;
   if (!confirm(`Deseja apagar o chatbot "${bot.name}"?`)) return;
@@ -424,6 +424,10 @@ function deleteBot(botId) {
 
   renderChatbots();
   renderMessages();
+
+  fetch(`${API_BASE}/${botId}`, {
+    method: 'DELETE',
+  })
 }
 
 async function selectBot(botId) {
@@ -444,8 +448,8 @@ async function selectBot(botId) {
     chatMessages.innerHTML = `<div class="message system">Carregando dados do bot pela API...</div>`;
     const botData = await fetchChatbotById(selectedBotId);
     const preview = typeof botData === 'object'
-      ? `Bot carregado com sucesso via GET /api/Chatbot/${selectedBotId}. Modelo: ${botData.model || botData.Model || selected.model}.`
-      : `Bot carregado com sucesso via GET /api/Chatbot/${selectedBotId}.`;
+      ? `Bot carregado com sucesso Modelo: ${botData.model || botData.Model || selected.model}.`
+      : `Bot carregado com sucesso.`;
     renderMessages();
     conversations[selectedBotId].messages.push({ role: 'system', content: preview });
     renderMessages();
@@ -477,16 +481,16 @@ async function handleSendMessage(event) {
   renderMessages();
   chatInput.value = '';
 
-  conversation.messages.push({ role: 'system', content: 'Enviando mensagem ao webhook...' });
+  conversation.messages.push({ role: 'system', content: 'Pensando...' });
   renderMessages();
 
   try {
     const responseData = await sendWebhookMessage(payload);
-    conversation.messages = conversation.messages.filter(msg => msg.content !== 'Enviando mensagem ao webhook...');
+    conversation.messages = conversation.messages.filter(msg => msg.content !== 'Pensando...');
     conversation.messages.push({ role: 'ai', content: extractAiMessage(responseData) });
     renderMessages();
   } catch (error) {
-    conversation.messages = conversation.messages.filter(msg => msg.content !== 'Enviando mensagem ao webhook...');
+    conversation.messages = conversation.messages.filter(msg => msg.content !== 'Pensando...');
     conversation.messages.push({ role: 'system', content: `Erro ao chamar o webhook: ${error.message}` });
     renderMessages();
   }
